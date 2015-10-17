@@ -21,6 +21,21 @@ def getHourlyFC_HTSensor(zipcode):
         newFormat.append(hourly)
     return newFormat
 
+def getHourlyForecast(zipcode, unit):
+    respJson = getHourlyFC(zipcode)
+    forecastJson = respJson['hourly_forecast']
+    newFormat = []
+    for item in forecastJson:
+        hourly = {}
+        hourly['epoch'] = item['FCTTIME']['epoch']
+		if (unit == "english") :
+			hourly['temp'] = item['temp']['english']
+		else :
+			hourly['temp'] = item['temp']['metric']
+        hourly['humidity'] = item['humidity']
+        newFormat.append(hourly)
+    return newFormat
+
 def requestWUG(url):
     errorCount = 10
     while errorCount > 0:
