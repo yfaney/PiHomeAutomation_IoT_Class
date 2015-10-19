@@ -26,13 +26,13 @@ def getHourlyForecast(zipcode, unit):
     forecastJson = respJson['hourly_forecast']
     newFormat = []
     for item in forecastJson:
-        hourly = ObjectPackage()
-        hourly.epoch = item['FCTTIME']['epoch']
+        hourly = {}
+        hourly['epoch'] = item['FCTTIME']['epoch']
         if(unit == "english"):
-            hourly.temp = item['temp']['english']
+            hourly['temp'] = item['temp']['english']
         else:
-            hourly.temp = item['temp']['metric']
-        hourly.humidity = item['humidity']
+            hourly['temp'] = item['temp']['metric']
+        hourly['humidity'] = item['humidity']
         newFormat.append(hourly)
     return newFormat
 
@@ -52,6 +52,3 @@ def requestWUG(url):
         else:
             errorCount = 0
     return obj
-
-class ObjectPackage(object):
-    pass
