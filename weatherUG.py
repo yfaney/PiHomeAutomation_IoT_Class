@@ -2,7 +2,7 @@
 import urllib2, json
 
 REQUEST_URL_HOME = "http://api.wunderground.com"
-API_KEY = "YOUR_WUG_API_KEY"
+API_KEY = "1311abfeb457472a" # Hayden's key
 
 def getHourlyFC(zipcode):
     url = "%s/api/%s/hourly/q/%s.json" % (REQUEST_URL_HOME, API_KEY, str(zipcode                                      ))
@@ -28,10 +28,10 @@ def getHourlyForecast(zipcode, unit):
     for item in forecastJson:
         hourly = {}
         hourly['epoch'] = item['FCTTIME']['epoch']
-		if (unit == "english") :
-			hourly['temp'] = item['temp']['english']
-		else :
-			hourly['temp'] = item['temp']['metric']
+        if(unit == "english"):
+            hourly['temp'] = item['temp']['english']
+        else:
+            hourly['temp'] = item['temp']['metric']
         hourly['humidity'] = item['humidity']
         newFormat.append(hourly)
     return newFormat
