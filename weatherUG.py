@@ -2,10 +2,18 @@
 import urllib2, json
 
 REQUEST_URL_HOME = "http://api.wunderground.com"
+<<<<<<< HEAD
 API_KEY = "YOUR_WUG_API_KEY"
 
 def getHourlyFC(zipcode):
     url = "%s/api/%s/hourly/q/%s.json" % (REQUEST_URL_HOME, API_KEY, str(zipcode                                      ))
+=======
+REQUEST_SUB_HOURLY_FC = "/api/2bed100a81f99ffd/hourly/q/66204.json"
+API_KEY = "2bed100a81f99ffd"
+
+def getHourlyFC(zipcode):
+    url = "%s/api/%s/hourly/q/%s.json" % (REQUEST_URL_HOME, API_KEY, str(zipcode))
+>>>>>>> fc302569fb84d09a8d676e3757e9b89f0a2d07fb
     respJson = requestWUG(url)
     return respJson
 
@@ -15,7 +23,12 @@ def getHourlyFC_HTSensor(zipcode):
     newFormat = []
     for item in forecastJson:
         hourly = {}
+<<<<<<< HEAD
         hourly['epoch'] = item['FCTTIME']['epoch']
+=======
+        hourly['zipcode'] = zipcode
+        hourly['tstamp'] = int(item['FCTTIME']['epoch'])
+>>>>>>> fc302569fb84d09a8d676e3757e9b89f0a2d07fb
         hourly['temp'] = item['temp']['metric']
         hourly['humidity'] = item['humidity']
         newFormat.append(hourly)

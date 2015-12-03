@@ -4,7 +4,7 @@ import httplib, json
 #Younghwan's own module
 import weatherUG
 #The returned json format is {"epoch" : epoch time, "temp" : temperature, "humidity" : humidity}
-GCM_SERVER_API_KEY = 'AIzaSyCig9bJXo86ke32_w5WxziO8s4QRyaoZuI'
+GCM_SERVER_API_KEY = 'AIzaSyBnKZrBOuJkVN7740MkqN8YCzq8-y8dURg'
 GCM_REQUEST_URL = 'gcm-http.googleapis.com'
 GCM_REQUEST_SUBPATH = '/gcm/send'
 GCM_CLIENT_KEY = [ 'dPHQFUkW3Lc:APA91bFxNqeS2sGZZJbpViLrT8Eh4iUPS6nDbhjNPdHDLlZC0TOlSyAkne38h8UwH1r3xs26iFm_m4G4O6eGzdJOWJW8Vxw3gPfpjeHzdSaH8lytUTuiIvZ78SWYtZN_hgPrNlin8uHO' ]
