@@ -19,7 +19,8 @@
     // Global variables
     
     //var myhost = "http://yfaney.duckdns.org";
-    var myhost = "http://192.168.0.24";
+    var myhost = "http://mypifaney05.duckdns.org";
+    //var myhost = "http://192.168.0.24";
     var sensor_name = "{{ sensor_name }}";
     var dateFrom = {{ date_from }};
     var zipcode = "66204";
@@ -81,6 +82,7 @@
 
     var gTitleT = sensor_name + "'s Temperature";
     var gTitleH = sensor_name + "'s Humidity";
+    google.load("visualization", "1.0", { packages: ["corechart", "timeline"] });
     
     // Draw Chart!
     function drawChart() {
@@ -153,7 +155,6 @@
     $.when(sensorDataRequest(dateFrom), forecastDataRequest(dateFrom)).done(function(resp1, resp2){
         htSensors = eval(resp1[0]);
         htForecasts = eval(resp2[0]);
-        google.load("visualization", "1.0", { packages: ["corechart", "timeline"] });
         google.setOnLoadCallback(drawChart);
     });
     runEvery1Min();
