@@ -27,7 +27,7 @@ import Adafruit_DHT
 import json
 
 import subprocess, httplib, json, datetime, time
-
+#import RPi.GPIO as GPIO
 import WeatherUG as WUG
 
 import RESTInterface as RESTI
@@ -43,7 +43,7 @@ GCM_CLIENT_KEY2 = ['APA91bHNm_f0E4NXvzfppvt6udxHF8KkiA6uCvYFG882yI4KRvFOELfAuykt
 MYSERVER_SENSOR_NAME = 'StudyRoom01'
 
 # How long to wait (in seconds) between measurements.
-FREQUENCY_SECONDS      = 120
+FREQUENCY_SECONDS      = 60
 
 # Parse command line parameters.
 sensor_args = { '11': Adafruit_DHT.DHT11,
@@ -52,6 +52,12 @@ sensor_args = { '11': Adafruit_DHT.DHT11,
 
 dbi = RESTI.dbInterface()
 gpioi = RESTI.gpioInterface(RESTI.GPIO_API_URL)
+
+#For DC Motor
+#GPIO.setup(20, GPIO.OUT)
+#GPIO.setup(21, GPIO.OUT)
+#GPIO.output(20, False)
+#GPIO.output(21, False)
 
 def noti_server(temp, humi, msg, status):
 	c = httplib.HTTPSConnection(GCM_REQUEST_URL)
@@ -149,6 +155,16 @@ def analyzeFCData(fcData, temp_low, temp_high, humi_low, humi_high):
 def readPhotoResistor():
 	reading = gpioi.get_photo_sensor()
 	return reading['output']
+
+#def shadeDown():
+    #GPIO.output(20, True)
+    #time.sleep(1)
+    #GPIO.output(20, False)
+
+#def shadeUp():
+    #GPIO.output(21, True)
+    #time.sleep(1)
+    #GPIO.output(21, False)
 
 # Starts Here!!!
 

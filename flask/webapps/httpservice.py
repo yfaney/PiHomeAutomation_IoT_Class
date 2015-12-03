@@ -19,9 +19,14 @@ GPIO.setup(17, GPIO.OUT)
 #GPIO.setup(11, GPIO.OUT)
 #GPIO.setup(12, GPIO.OUT)
 #GPIO.setup(13, GPIO.OUT)
-#GPIO.setup(15, GPIO.OUT)
-#GPIO.setup(16, GPIO.OUT)
-#GPIO.setup(18, GPIO.OUT)
+
+#DC Motor + - for GPIO20, GPIO21. Do Not USE 20 & 21 because other program uses!
+#GPIO.setup(20, GPIO.OUT)
+#GPIO.setup(21, GPIO.OUT)
+
+
+#Photo for GPIO22
+#GPIO.setup(22, GPIO.OUT)
 
 #Heater for GPIO23
 GPIO.setup(23, GPIO.OUT)
@@ -34,7 +39,7 @@ GPIO.output(17, False)
 #GPIO.output(13, False)
 #GPIO.output(15, False)
 #GPIO.output(16, False)
-#GPIO.output(18, False)
+#GPIO.output(22, False)
 GPIO.output(23, False)
 GPIO.output(24, False)
 
@@ -45,16 +50,15 @@ updateFlag = False
 now = datetime.datetime.now()
 timeString = now.strftime("%Y-%m-%d %H:%M")
 
-@app.route("/")
-#@cross_origin()
-def hello():
+@app.route("/dashboard")
+def dashboard():
     sensorName = request.args.get('sensorName')
     dateAgo = request.args.get('dateAgo')
     if (sensorName is None):
         sensorName = "StudyRoom01"
     if (dateAgo is None):
         dateAgo = 1
-    dateFrom = now - datetime.timedelta(dateAgo)
+    dateFrom = now - datetime.timedelta(int(dateAgo))
     templateData = {
         'title' : 'IoT Dashboard',
         'sensor_name' : sensorName,
@@ -63,9 +67,10 @@ def hello():
     }
     return render_template('dashboard.html', **templateData)
     
-@app.route("/hello")
-def helloworld():
-    return "hello world!"
+@app.route("/")
+#@cross_origin()
+def hello():
+    return dashboard()
 
 @app.route("/api/getIOStatus")
 def getIoStatus():
@@ -141,7 +146,7 @@ def getHumier():
     return json.dumps(data)
 
 @app.route("/api/get/photo")
-def readPhotoResistor ():
+def readPhoto():
     reading = 0
     GPIO.setup(22, GPIO.OUT)
     GPIO.output(22, GPIO.LOW)
@@ -151,7 +156,7 @@ def readPhotoResistor ():
     while (GPIO.input(22) == GPIO.LOW):
         reading += 1
     data = {"pinno" : 22, "output": reading}
-    return data
+    return json.dumps(data)
 
 if __name__ == "__main__":
     try:

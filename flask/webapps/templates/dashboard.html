@@ -3,23 +3,23 @@
 <meta http-equiv="Expires" content="0"/>
 <head>
     <title>{{ title }}</title>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     <!-- Loading Bootstrap -->
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous"/>
 
 	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous"/>
 
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
 	
-    <script type="text/javascript">
+	<script type="text/javascript" src="https://www.google.com/jsapi?language=en"></script>
+	<script type="text/javascript">
 	// Global variables
 	
-	var myhost = "http://yfaney.duckdns.org";
-	//var myhost = "http://192.168.0.24";
+	//var myhost = "http://yfaney.duckdns.org";
+	var myhost = "http://192.168.0.24";
 	var sensor_name = "{{ sensor_name }}";
 	var dateFrom = {{ date_from }};
 	var zipcode = "66204";
@@ -31,7 +31,7 @@
 	
 	function sensorDataRequest(datetimefrom){
 		return $.ajax({
-			url: myhost + ':27018/iot/ht_sensor?query={"sensor_name":"' + sensor_name + '", "tstamp":{"$gte":{"$date":' + datetimefrom + '}}}&field={"_id":0}',
+			url: myhost + ':27018/iot/ht_sensor?query={"sensor_name":"' + sensor_name + '", "tstamp":{"$gte":{"$date":' + datetimefrom + '}}}&field={"_id":0}&limit=1048576',
 			xhrFields: {
 				withCredentials: true
 			},
@@ -41,7 +41,7 @@
 	
 	function forecastDataRequest(datetimefrom){
 		return $.ajax({
-			url: myhost + ':27018/iot/ht_forecast?query={"zipcode":"' + zipcode + '", "tstamp":{"$gte":{"$date":' + datetimefrom + '}}}&field={"_id":0}',
+			url: myhost + ':27018/iot/ht_forecast?query={"zipcode":"' + zipcode + '", "tstamp":{"$gte":{"$date":' + datetimefrom + '}}}&field={"_id":0}&limit=1048576',
 			xhrFields: {
 			withCredentials: true
 		},
@@ -60,85 +60,45 @@
 	}
 	
 	function runEvery1Min() {
-        $.when(lastSensorDataRequest()).done(function (resp) {
-            result = eval(resp)[0];
-            var lDate = epoch_to_date(result.tstamp.$date);
-            var lDateTimeStr = lDate.toDateString() + " " + lDate.toTimeString();
-            var lTemp = Math.round(result.temperature * 100) / 100;
-            var lHumi = Math.round(result.humidity * 100) / 100;
-            $('#curr_ht').html("<h3>As of " + lDateTimeStr + "</h3><h2>Temp: " + lTemp + "&#8451; Humidity: " + lHumi + "%</h2>");
-            setTimeout(runEvery1Min(), 60 * 1000);
-        });
-    }
-
-    function parseKoreanDate(dateString){
-        var token = dateString.split(' ');
-        var lDate = token[0];
-        var lAmPm = token[1];
-        var lTime = token[2];
-        var dateToken = lDate.split('-');
-        var timeToken = lTime.split(':');
-        var lYear = parseInt(dateToken[0]);
-        var lMonth = parseInt(dateToken[1]);
-        var lDay = parseInt(dateToken[2]);
-        var lHour = parseInt(timeToken[0]);
-        var lMinute = parseInt(timeToken[1]);
-        var lSecond = parseInt(timeToken[2]);
-        if(lAmPm == "오후"){
-            lHour += 12;
-        }
-        return new Date(lYear, lMonth, lDay, lHour, lMinute, lSecond);
-    }
-	
-	function epoch_to_date(epoch) {
-        var d = new Date();
-        d.setTime(epoch)
-        return d;
-    }
-	
-	function getSensorData(sensorName, datetimeFrom, datetimeTo){
-		if(DEBUG){
-			return JSON.parse("[{'sensorname':'Sensor01', 'tstamp':1446703200000, 'Temperature':25, 'Humidity':50}]")
-		}else{
-		}
+        	$.when(lastSensorDataRequest()).done(function (resp) {
+            		result = eval(resp)[0];
+            		var lDate = epoch_to_date(result.tstamp.$date);
+            		var lDateTimeStr = lDate.toDateString() + " " + lDate.toTimeString();
+            		var lTemp = Math.round(result.temperature * 100) / 100;
+            		var lHumi = Math.round(result.humidity * 100) / 100;
+            		$('#curr_ht').html("<h3>As of " + lDateTimeStr + "</h3><h2>Temp: " + lTemp + "&#8451; Humidity: " + lHumi + "%</h2>");
+            		setTimeout(runEvery1Min(), 60 * 1000);
+        	});
 	}
-	function getForecastData(zipcode, datetimeFrom, datetimeTo){
-		if(DEBUG){
-			return JSON.parse("[{'zipcode':'66204', 'tstamp':1446705200000, 'Temperature':22, 'Humidity':47}]")
-		}else{
-		}
+
+	function epoch_to_date(epoch) {
+		var d = new Date();
+		d.setTime(epoch)
+		return d;
 	}
 	
 	// Main Start From Here!!
 
-    var gTitleT = sensor_name + "'s Temperature";
-    var gTitleH = sensor_name + "'s Humidity";
-    google.load("visualization", "1", { packages: ["corechart", "timeline"] });
-	
-	// Read data from DB
-	$.when(sensorDataRequest(dateFrom), forecastDataRequest(dateFrom)).done(function(resp1, resp2){
-		htSensors = eval(resp1[0]);
-		htForecasts = eval(resp2[0]);
-		google.setOnLoadCallback(drawChart);
-	});
+	var gTitleT = sensor_name + "'s Temperature";
+	var gTitleH = sensor_name + "'s Humidity";
 	
 	// Draw Chart!
-    function drawChart() {
-        if(htSensors.length == 0 && htForecasts.length == 0){
-            gTitle = 'No data for ' + gTitle;
-        }
-        var dataSensorTemp = new google.visualization.DataTable();
-        var dataSensorHumi = new google.visualization.DataTable();
-        dataSensorTemp.addColumn('datetime', 'Date');
-        dataSensorTemp.addColumn('number', 'Sensor');
-        dataSensorHumi.addColumn('datetime', 'Date');
-        dataSensorHumi.addColumn('number', 'Sensor');
-        for(var i = 0 ; i < htSensors.length ; i++){
-            var htSensor = htSensors[i];
-            var sensorTime = epoch_to_date(htSensor.tstamp.$date);
-            dataSensorTemp.addRow([sensorTime, htSensor.temperature]);
-            dataSensorHumi.addRow([sensorTime, htSensor.humidity]);
-        }
+	function drawChart() {
+		if(htSensors.length == 0 && htForecasts.length == 0){
+			gTitle = 'No data for ' + gTitle;
+		}
+		var dataSensorTemp = new google.visualization.DataTable();
+		var dataSensorHumi = new google.visualization.DataTable();
+		dataSensorTemp.addColumn('datetime', 'Date');
+		dataSensorTemp.addColumn('number', 'Sensor');
+		dataSensorHumi.addColumn('datetime', 'Date');
+		dataSensorHumi.addColumn('number', 'Sensor');
+		for(var i = 0 ; i < htSensors.length ; i++){
+			var htSensor = htSensors[i];
+			var sensorTime = epoch_to_date(htSensor.tstamp.$date);
+			dataSensorTemp.addRow([sensorTime, htSensor.temperature]);
+			dataSensorHumi.addRow([sensorTime, htSensor.humidity]);
+		}
         var dataForecastTemp = new google.visualization.DataTable();
         var dataForecastHumi = new google.visualization.DataTable();
         dataForecastTemp.addColumn('datetime', 'Date');
@@ -189,7 +149,13 @@
         var chartHumi = new google.visualization.AreaChart(document.getElementById('chart_humi'));
         chartHumi.draw(joinedHumi, optionsH);
 	runEvery1Min();
-    }
+	// Read data from DB
+	$.when(sensorDataRequest(dateFrom), forecastDataRequest(dateFrom)).done(function(resp1, resp2){
+		htSensors = eval(resp1[0]);
+		htForecasts = eval(resp2[0]);
+		google.load("visualization", "1.0", { packages: ["corechart", "timeline"] });
+		google.setOnLoadCallback(drawChart);
+	});
 	
     </script>
 </head>
